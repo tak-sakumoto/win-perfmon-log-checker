@@ -16,8 +16,10 @@ $invalidChars = [IO.Path]::GetInvalidFileNameChars() | Where-Object { $_ -ne "\\
 # Convert the specified blg file to a CSV file
 Start-Process -NoNewWindow -Wait -FilePath "relog.exe" -ArgumentList "$blgPath", "-f", "CSV", "-o", "$allCSVPath"
 
-# Load the CSV file 
+# Load all.csv
 $csv = Import-Csv -Path $allCSVPath
+# Overwrite all.csv without unnecessary quotes
+$csv | Export-Csv -Path $allCSVPath -NoTypeInformation -UseQuotes AsNeeded
 
 # Get counter names from the CSV file
 $counterNames = $csv | Get-Member -MemberType NoteProperty | Select-Object -ExpandProperty Name
@@ -39,7 +41,7 @@ for ($i = 1; $i -lt $counterNames.Count; $i++) {
     $parentPath = Split-Path -Path $outDirPath\$outFileName -Parent
     New-Item -Path $parentPath -ItemType Directory -Force -ErrorAction SilentlyContinue
     
-    # Export the CSV file for the counter
+    # Export the CSV file for the counter without unnecessary quotes
     $outPath = "$outDirPath\$outFileName.csv"
-    $csv | Select-Object -Property $counterNames[0], $counterNames[$i] | Export-Csv -Path $outPath -NoTypeInformation
+    $csv | Select-Object -Property $counterNames[0], $counterNames[$i] | Export-Csv -Path $outPath -NoTypeInformation -UseQuotes AsNeeded
 }
