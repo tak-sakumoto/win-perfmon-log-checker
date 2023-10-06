@@ -89,9 +89,14 @@ for ($i = 1; $i -lt $counterNames.Count; $i++) {
     $workbook.Close()
     $excel.Quit()
 
-    [System.Runtime.Interopservices.Marshal]::ReleaseComObject($worksheet)
-    [System.Runtime.Interopservices.Marshal]::ReleaseComObject($workbook)
-    [System.Runtime.Interopservices.Marshal]::ReleaseComObject($excel)
+    # Release COM objects
+    [System.Runtime.Interopservices.Marshal]::ReleaseComObject($dataRange) | Out-Null
+    [System.Runtime.Interopservices.Marshal]::ReleaseComObject($chart) | Out-Null
+    [System.Runtime.Interopservices.Marshal]::ReleaseComObject($worksheet) | Out-Null
+    [System.Runtime.Interopservices.Marshal]::ReleaseComObject($workbook) | Out-Null
+    [System.Runtime.Interopservices.Marshal]::ReleaseComObject($excel) | Out-Null
+
+    # Perform garbage collection
     [System.GC]::Collect()
     [System.GC]::WaitForPendingFinalizers()
     [System.GC]::Collect()
