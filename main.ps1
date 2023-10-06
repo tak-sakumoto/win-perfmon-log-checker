@@ -92,6 +92,7 @@ for ($i = 1; $i -lt $counterNames.Count; $i++) {
     [System.Runtime.Interopservices.Marshal]::ReleaseComObject($worksheet)
     [System.Runtime.Interopservices.Marshal]::ReleaseComObject($workbook)
     [System.Runtime.Interopservices.Marshal]::ReleaseComObject($excel)
+    [System.GC]::Collect()
     [System.GC]::WaitForPendingFinalizers()
     [System.GC]::Collect()
 }
