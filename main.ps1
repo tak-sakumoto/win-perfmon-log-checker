@@ -79,8 +79,20 @@ for ($i = 1; $i -lt $counterNames.Count; $i++) {
     $chart = $worksheet.Shapes.AddChart2(-1, $chartType, 0, 0, $chartWidth, $chartHeight, $true)
 
     # Specify a range of data in the workbook
-    $dataRange = $worksheet.Range($worksheet.Cells.Item(1, 2), $worksheet.Cells.Item($j, 2))
-    $chart.Chart.SetSourceData($dataRange)
+    $seriesCollection = $chart.Chart.SeriesCollection()
+    $series = $seriesCollection.NewSeries()
+    $series.XValues = $worksheet.Range($worksheet.Cells.Item(2, 1), $worksheet.Cells.Item($j, 1))
+    $series.Values = $worksheet.Range($worksheet.Cells.Item(2, 2), $worksheet.Cells.Item($j, 2))
+
+    # Get the axes
+    $xAxis = $chart.Chart.Axes(1, 1)
+    $yAxis = $chart.Chart.Axes(2, 1)
+
+    # Set the axis titles
+    $xAxis.HasTitle = $true
+    $xAxis.AxisTitle.Text = $counterNames[0]
+    $yAxis.HasTitle = $true
+    $yAxis.AxisTitle.Text = $counterNames[$i]
 
     # Save the Excel book
     $outPath = "$outDirPath$outFileName.xlsx"
@@ -90,7 +102,10 @@ for ($i = 1; $i -lt $counterNames.Count; $i++) {
     $excel.Quit()
 
     # Release COM objects
-    [System.Runtime.Interopservices.Marshal]::ReleaseComObject($dataRange) | Out-Null
+    [System.Runtime.Interopservices.Marshal]::ReleaseComObject($yAxis) | Out-Null
+    [System.Runtime.Interopservices.Marshal]::ReleaseComObject($xAxis) | Out-Null
+    [System.Runtime.Interopservices.Marshal]::ReleaseComObject($series) | Out-Null
+    [System.Runtime.Interopservices.Marshal]::ReleaseComObject($seriesCollection) | Out-Null
     [System.Runtime.Interopservices.Marshal]::ReleaseComObject($chart) | Out-Null
     [System.Runtime.Interopservices.Marshal]::ReleaseComObject($worksheet) | Out-Null
     [System.Runtime.Interopservices.Marshal]::ReleaseComObject($workbook) | Out-Null
