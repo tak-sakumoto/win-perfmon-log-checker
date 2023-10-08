@@ -73,6 +73,21 @@ for ($i = 1; $i -lt $counterNames.Count; $i++) {
     # Export the CSV file for the counter without unnecessary quotes
     $outPath = "$outDirPath$outFileName.csv"
     $csv | Select-Object -Property $counterNames[0], $counterNames[$i] | Export-Csv -Path $outPath -NoTypeInformation -UseQuotes AsNeeded
+    
+    # Get values in the i-th column
+    $columnValues = $csv | ForEach-Object { $_.($counterNames[$i]) }
+
+    # Get an array of stats for the i-th column
+    $stats = @{
+        Count = $columnValues.Count
+        Maximum = ($columnValues | Measure-Object -Maximum).Maximum
+        Minimum = ($columnValues | Measure-Object -Minimum).Minimum
+        Average = ($columnValues | Measure-Object -Average).Average
+    }
+    $outPath = "$outDirPath$outFileName" + "_stats.csv"
+
+    # Export the stats array
+    $stats | Select-Object Count, Maximum, Minimum, Average | Export-Csv -Path $outPath -NoTypeInformation -UseQuotes AsNeeded
 
     # Prepare to handle Excel
     $excel = New-Object -ComObject Excel.Application
