@@ -24,11 +24,19 @@ Start-Process -NoNewWindow -Wait -FilePath "relog.exe" -ArgumentList "$blgPath",
 
 # Load all.csv
 $csv = Import-Csv -Path $allCSVPath
-# Overwrite all.csv without unnecessary quotes
-$csv | Export-Csv -Path $allCSVPath -NoTypeInformation -UseQuotes AsNeeded
 
 # Get counter names from the CSV file
 $counterNames = $csv | Get-Member -MemberType NoteProperty | Select-Object -ExpandProperty Name
+
+# Convert the time format
+$csv = $csv | ForEach-Object {
+    $time = [DateTime]::ParseExact($_.($counterNames[0]), "MM/dd/yyyy HH:mm:ss.fff", $null)
+    $_.($counterNames[0]) = $time.ToString("yyyy/MM/dd HH:mm:ss.fff")
+    $_
+}
+
+# Overwrite all.csv without unnecessary quotes
+$csv | Export-Csv -Path $allCSVPath -NoTypeInformation -UseQuotes AsNeeded
 
 # Export a CSV file for each counter
 for ($i = 1; $i -lt $counterNames.Count; $i++) {
