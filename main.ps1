@@ -1,7 +1,9 @@
 # Arguments
 param (
     [string]$blgPath,
-    [string]$outDirPath = ".\out"
+    [string]$outDirPath = ".\out",
+    [string]$startTime = "",
+    [string]$endTime = ""
 )
 
 # Constants
@@ -27,6 +29,16 @@ $csv = Import-Csv -Path $allCSVPath
 
 # Get counter names from the CSV file
 $counterNames = $csv | Get-Member -MemberType NoteProperty | Select-Object -ExpandProperty Name
+
+# Extract between the start time and the end time
+if ($startTime.Trim().Length -ne 0) {
+    $startTime = [DateTime]::ParseExact($startTime, "yyyy/MM/dd HH:mm:ss", $null)
+    $csv = $csv | Where-Object { $_.($counterNames[0]) -ge $startTime }
+}
+if ($endTime.Trim().Length -ne 0) {
+    $endTime = [DateTime]::ParseExact($endTime, "yyyy/MM/dd HH:mm:ss", $null)
+    $csv = $csv | Where-Object { $_.($counterNames[0]) -le $endTime }
+}
 
 # Convert the time format
 $csv = $csv | ForEach-Object {
