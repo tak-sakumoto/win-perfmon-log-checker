@@ -1,7 +1,9 @@
 # Arguments
 param (
     [string]$blgPath,
-    [string]$outDirPath = ".\out"
+    [string]$outDirPath = ".\out",
+    [string]$startTime = "",
+    [string]$endTime = ""
 )
 
 # Constants
@@ -24,11 +26,29 @@ Start-Process -NoNewWindow -Wait -FilePath "relog.exe" -ArgumentList "$blgPath",
 
 # Load all.csv
 $csv = Import-Csv -Path $allCSVPath
-# Overwrite all.csv without unnecessary quotes
-$csv | Export-Csv -Path $allCSVPath -NoTypeInformation -UseQuotes AsNeeded
 
 # Get counter names from the CSV file
 $counterNames = $csv | Get-Member -MemberType NoteProperty | Select-Object -ExpandProperty Name
+
+# Extract between the start time and the end time
+if ($startTime.Trim().Length -ne 0) {
+    $startTime = [DateTime]::ParseExact($startTime, "yyyy/MM/dd HH:mm:ss", $null)
+    $csv = $csv | Where-Object { $_.($counterNames[0]) -ge $startTime }
+}
+if ($endTime.Trim().Length -ne 0) {
+    $endTime = [DateTime]::ParseExact($endTime, "yyyy/MM/dd HH:mm:ss", $null)
+    $csv = $csv | Where-Object { $_.($counterNames[0]) -le $endTime }
+}
+
+# Convert the time format
+$csv = $csv | ForEach-Object {
+    $time = [DateTime]::ParseExact($_.($counterNames[0]), "MM/dd/yyyy HH:mm:ss.fff", $null)
+    $_.($counterNames[0]) = $time.ToString("yyyy/MM/dd HH:mm:ss.fff")
+    $_
+}
+
+# Overwrite all.csv without unnecessary quotes
+$csv | Export-Csv -Path $allCSVPath -NoTypeInformation -UseQuotes AsNeeded
 
 # Export a CSV file for each counter
 for ($i = 1; $i -lt $counterNames.Count; $i++) {
