@@ -9,6 +9,7 @@ param (
 # Dot sourcing
 . .\edit_time_range.ps1
 . .\convert_time_format.ps1
+. .\get_valid_name.ps1
 . .\save_graph_by_excel.ps1
 
 # Make a foloder to save output files
@@ -17,9 +18,6 @@ $outDirPath = Convert-Path $outDirPath
 
 # Get a file path for the CSV file to store all counters
 $allCSVPath = "$outDirPath\all.csv"
-
-# Search for invalid characters in file paths, excluding backslashes
-$invalidChars = [IO.Path]::GetInvalidFileNameChars() | Where-Object { $_ -ne "\\" }
 
 # Convert the specified blg file to a CSV file
 Start-Process -NoNewWindow -Wait -FilePath "relog.exe" -ArgumentList "$blgPath", "-f", "CSV", "-o", "$allCSVPath"
@@ -41,16 +39,8 @@ $csv | Export-Csv -Path $allCSVPath -NoTypeInformation -UseQuotes AsNeeded
 
 # Export a CSV file for each counter
 for ($i = 1; $i -lt $counterNames.Count; $i++) {
-    # Get a name of a CSV file for storing a counter
-    $outFileName = $counterNames[$i]
-
-    # Replace invalid characters in the file name to underscores 
-    foreach($char in $invalidChars) {
-        $escapedChar = [Regex]::Escape($char)
-        if($counterName -match $escapedChar) {
-            $outFileName = $outFileName -replace $escapedChar,"_"
-        }
-    }
+    # Replace invalid characters in the file name to underscores
+    $outFileName = Get-Valid-Name -fileName $counterNames[$i]
 
     # Remove duplicate backslashes
     $outFileName = $outFileName -replace '(\\{2,})', '\'
