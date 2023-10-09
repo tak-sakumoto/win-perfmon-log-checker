@@ -7,6 +7,7 @@ param (
 )
 
 # Dot sourcing
+. .\edit_time_range.ps1
 . .\save_graph_by_excel.ps1
 
 # Make a foloder to save output files
@@ -29,14 +30,7 @@ $csv = Import-Csv -Path $allCSVPath
 $counterNames = $csv | Get-Member -MemberType NoteProperty | Select-Object -ExpandProperty Name
 
 # Extract between the start time and the end time
-if ($startTime.Trim().Length -ne 0) {
-    $startTime = [DateTime]::ParseExact($startTime, "yyyy/MM/dd HH:mm:ss", $null)
-    $csv = $csv | Where-Object { $_.($counterNames[0]) -ge $startTime }
-}
-if ($endTime.Trim().Length -ne 0) {
-    $endTime = [DateTime]::ParseExact($endTime, "yyyy/MM/dd HH:mm:ss", $null)
-    $csv = $csv | Where-Object { $_.($counterNames[0]) -le $endTime }
-}
+$csv = Edit-Time-Range -startTime $startTime -endTime $endTime -timeColName $counterNames[0] -csv $csv
 
 # Convert the time format
 $csv = $csv | ForEach-Object {
