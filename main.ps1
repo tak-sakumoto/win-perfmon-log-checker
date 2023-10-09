@@ -10,6 +10,7 @@ param (
 . .\edit_time_range.ps1
 . .\convert_time_format.ps1
 . .\get_valid_name.ps1
+. .\get_stats.ps1
 . .\save_graph_by_excel.ps1
 
 # Make a foloder to save output files
@@ -53,21 +54,10 @@ for ($i = 1; $i -lt $counterNames.Count; $i++) {
     $outPath = "$outDirPath$outFileName.csv"
     $csv | Select-Object -Property $counterNames[0], $counterNames[$i] | Export-Csv -Path $outPath -NoTypeInformation -UseQuotes AsNeeded
     
-    # Get values in the i-th column
-    $columnValues = $csv | ForEach-Object { $_.($counterNames[$i]) }
-
     # Get an array of stats for the i-th column
-    $stats = @{
-        Count = $columnValues.Count
-        Maximum = ($columnValues | Measure-Object -Maximum).Maximum
-        Minimum = ($columnValues | Measure-Object -Minimum).Minimum
-        Average = ($columnValues | Measure-Object -Average).Average
-    }
     $outPath = "$outDirPath$outFileName" + "_stats.csv"
+    Get-Stats -outPath $outPath -$colName $counterNames[$i] -csv $csv
 
-    # Export the stats array
-    $stats | Select-Object Count, Maximum, Minimum, Average | Export-Csv -Path $outPath -NoTypeInformation -UseQuotes AsNeeded
-    
     # Draw a line graph for the counter and save as an Excel workbook
     $outPath = "$outDirPath$outFileName.xlsx"
     Save-Graph-By-Excel -outPath $outPath -xAxisName $counterNames[0] -yAxisName $counterNames[$i] -csv $csv
