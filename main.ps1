@@ -8,6 +8,7 @@ param (
 
 # Dot sourcing
 . .\edit_time_range.ps1
+. .\convert_time_format.ps1
 . .\save_graph_by_excel.ps1
 
 # Make a foloder to save output files
@@ -32,12 +33,8 @@ $counterNames = $csv | Get-Member -MemberType NoteProperty | Select-Object -Expa
 # Extract between the start time and the end time
 $csv = Edit-Time-Range -startTime $startTime -endTime $endTime -timeColName $counterNames[0] -csv $csv
 
-# Convert the time format
-$csv = $csv | ForEach-Object {
-    $time = [DateTime]::ParseExact($_.($counterNames[0]), "MM/dd/yyyy HH:mm:ss.fff", $null)
-    $_.($counterNames[0]) = $time.ToString("yyyy/MM/dd HH:mm:ss.fff")
-    $_
-}
+# Convert the time format MM/dd/yyyy HH:mm:ss.fff into yyyy/MM/dd HH:mm:ss.fff
+$csv = Convert-Time-Format -timeColName $counterNames[0] -csv $csv
 
 # Overwrite all.csv without unnecessary quotes
 $csv | Export-Csv -Path $allCSVPath -NoTypeInformation -UseQuotes AsNeeded
