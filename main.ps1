@@ -125,9 +125,9 @@ for ($i = 1; $i -lt $counterNames.Count; $i++) {
 
     # Set the axis titles
     $xAxis.HasTitle = $true
-    $xAxis.AxisTitle.Text = $counterNames[0]
+    $xAxis.AxisTitle.Text = $worksheet.Cells.Item(1, 1)
     $yAxis.HasTitle = $true
-    $yAxis.AxisTitle.Text = $counterNames[$i]
+    $yAxis.AxisTitle.Text = $worksheet.Cells.Item(1, 2)
 
     # Save the Excel book
     $outPath = "$outDirPath$outFileName.xlsx"
