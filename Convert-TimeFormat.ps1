@@ -5,7 +5,7 @@ $originalTimeFormat = "MM/dd/yyyy HH:mm:ss.fff"
 $targetTimeFormat = "yyyy/MM/dd HH:mm:ss.fff"
 
 # Function
-function Convert-Time-Format {
+function Convert-TimeFormat {
     param (
         [string]$timeColName,
         $csv

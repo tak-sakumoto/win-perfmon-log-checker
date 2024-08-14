@@ -6,7 +6,7 @@ $chartWidth = 400
 $chartType = 4 # 4: line graph
 
 # Function
-function Save-Graph-By-Excel {
+function Save-GraphByExcel {
     param (
         [string]$outPath,
         [string]$xAxisName,

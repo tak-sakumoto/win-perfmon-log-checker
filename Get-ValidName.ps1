@@ -6,7 +6,7 @@ $invalidChars = [IO.Path]::GetInvalidFileNameChars() | Where-Object { $_ -ne "\\
 $targetChar = "_"
 
 # Function
-function Get-Valid-Name {
+function Get-ValidName {
     param (
         [string]$fileName
     )
