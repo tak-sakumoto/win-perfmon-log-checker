@@ -7,11 +7,11 @@ param (
 )
 
 # Dot sourcing
-. .\edit_time_range.ps1
-. .\convert_time_format.ps1
-. .\get_valid_name.ps1
-. .\get_stats.ps1
-. .\save_graph_by_excel.ps1
+. .\Edit-TimeRange.ps1
+. .\Convert-TimeFormat.ps1
+. .\Get-ValidName.ps1
+. .\Get-Stats.ps1
+. .\Save-GraphByExcel.ps1
 
 # Make a foloder to save output files
 New-Item -Path $outDirPath -ItemType Directory -Force
@@ -30,10 +30,10 @@ $csv = Import-Csv -Path $allCSVPath
 $counterNames = $csv | Get-Member -MemberType NoteProperty | Select-Object -ExpandProperty Name
 
 # Extract between the start time and the end time
-$csv = Edit-Time-Range -startTime $startTime -endTime $endTime -timeColName $counterNames[0] -csv $csv
+$csv = Edit-TimeRange -startTime $startTime -endTime $endTime -timeColName $counterNames[0] -csv $csv
 
 # Convert the time format MM/dd/yyyy HH:mm:ss.fff into yyyy/MM/dd HH:mm:ss.fff
-$csv = Convert-Time-Format -timeColName $counterNames[0] -csv $csv
+$csv = Convert-TimeFormat -timeColName $counterNames[0] -csv $csv
 
 # Overwrite all.csv without unnecessary quotes
 $csv | Export-Csv -Path $allCSVPath -NoTypeInformation -UseQuotes AsNeeded
@@ -41,7 +41,7 @@ $csv | Export-Csv -Path $allCSVPath -NoTypeInformation -UseQuotes AsNeeded
 # Export a CSV file for each counter
 for ($i = 1; $i -lt $counterNames.Count; $i++) {
     # Replace invalid characters in the file name to underscores
-    $outFileName = Get-Valid-Name -fileName $counterNames[$i]
+    $outFileName = Get-ValidName -fileName $counterNames[$i]
 
     # Remove duplicate backslashes
     $outFileName = $outFileName -replace '(\\{2,})', '\'
@@ -60,5 +60,5 @@ for ($i = 1; $i -lt $counterNames.Count; $i++) {
 
     # Draw a line graph for the counter and save as an Excel workbook
     $outPath = "$outDirPath$outFileName.xlsx"
-    Save-Graph-By-Excel -outPath $outPath -xAxisName $counterNames[0] -yAxisName $counterNames[$i] -csv $csv
+    Save-GraphByExcel -outPath $outPath -xAxisName $counterNames[0] -yAxisName $counterNames[$i] -csv $csv
 }

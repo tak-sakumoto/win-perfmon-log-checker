@@ -15,7 +15,7 @@ The tool has the following features.
 ### Command
 
 ```plaintxt
-> .\main.ps1 -blgPath \path\to\perfmon-result.blg -startTime "2023/10/09 12:00:00" -endTime "2023/10/10 00:00:00"
+> .\Main.ps1 -blgPath \path\to\perfmon-result.blg -startTime "2023/10/09 12:00:00" -endTime "2023/10/10 00:00:00"
 ```
 
 ### Arguments

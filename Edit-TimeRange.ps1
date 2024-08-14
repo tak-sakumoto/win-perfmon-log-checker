@@ -4,7 +4,7 @@
 $argTimeFormat = "yyyy/MM/dd HH:mm:ss"
 
 # Function
-function Edit-Time-Range {
+function Edit-TimeRange {
     param (
         [string]$startTime,
         [string]$endTime,
