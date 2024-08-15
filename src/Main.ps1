@@ -7,11 +7,11 @@ param (
 )
 
 # Dot sourcing
-. .\Edit-TimeRange.ps1
-. .\Convert-TimeFormat.ps1
-. .\Get-ValidName.ps1
-. .\Get-Stats.ps1
-. .\Save-GraphByExcel.ps1
+. "$PSScriptRoot\Edit-TimeRange.ps1"
+. "$PSScriptRoot\Convert-TimeFormat.ps1"
+. "$PSScriptRoot\Get-ValidName.ps1"
+. "$PSScriptRoot\Get-Stats.ps1"
+. "$PSScriptRoot\Save-GraphByExcel.ps1"
 
 # Make a foloder to save output files
 New-Item -Path $outDirPath -ItemType Directory -Force
