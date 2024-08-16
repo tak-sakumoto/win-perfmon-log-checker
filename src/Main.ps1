@@ -56,7 +56,7 @@ for ($i = 1; $i -lt $counterNames.Count; $i++) {
     
     # Get an array of stats for the i-th column
     $outPath = "$outDirPath$outFileName" + "_stats.csv"
-    Get-Stats -outPath $outPath -$colName $counterNames[$i] -csv $csv
+    Get-Stats -outPath $outPath -colName $counterNames[$i] -csv $csv
 
     # Draw a line graph for the counter and save as an Excel workbook
     $outPath = "$outDirPath$outFileName.xlsx"
